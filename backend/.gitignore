@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+
+# Jangan pernah commit file environment yang berisi secret
+.env
+.env.*
+!.env.example
+
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
