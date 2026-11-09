@@ -68,8 +68,7 @@ File `.env` tidak pernah di-commit. Nilai secret hanya disimpan di mesin masing-
 
 | Branch | Kegunaan |
 |---|---|
-| `main` | Kondisi stabil / siap demo. Hanya menerima merge dari `develop`. |
-| `develop` | Branch integrasi. Semua fitur masuk ke sini lebih dulu. |
+| `main` | Branch integrasi sekaligus kondisi siap demo. Semua perubahan masuk lewat Pull Request. |
 | `feature/<modul>` | Pengerjaan fitur baru. |
 | `fix/<masalah>` | Perbaikan bug. |
 | `chore/<hal>` | Pekerjaan non-fitur (konfigurasi, dependensi, CI). |
@@ -86,19 +85,33 @@ Pembagian branch per anggota:
 
 Alur kerja:
 
-1. `git switch develop` lalu `git pull`.
+1. `git switch main` lalu `git pull`.
 2. Buat branch baru: `git switch -c feature/nama-modul`.
 3. Kerjakan dan commit di branch tersebut.
 4. `git push -u origin feature/nama-modul`.
-5. Buat Pull Request ke `develop`, minta review, lalu merge.
+5. Buat Pull Request ke `main`, minta review, lalu merge.
 6. Hapus branch setelah di-merge.
 
 Aturan tambahan:
 
 - Satu branch untuk satu modul. Jangan mencampur beberapa fitur.
-- Jangan push langsung ke `main` atau `develop`.
+- Jangan push langsung ke `main`. Semua perubahan masuk lewat Pull Request.
 - Jangan commit file `.env`, secret, atau kredensial.
 - Hindari force push pada branch yang sudah di-push.
+
+Jika Pull Request berkonflik dengan `main`, GitHub menonaktifkan tombol merge sampai konflik diselesaikan:
+
+```powershell
+git switch feature/nama-modul
+git pull
+git merge origin/main
+# selesaikan konflik pada file yang ditandai, lalu
+git add .
+git commit -m "chore: menyelesaikan konflik dengan main"
+git push
+```
+
+Setelah push, Pull Request otomatis diperbarui. Tidak ada perubahan yang masuk ke `main` sebelum konflik selesai.
 
 ## Konvensi Commit
 
