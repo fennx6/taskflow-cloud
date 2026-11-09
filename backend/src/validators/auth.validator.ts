@@ -35,10 +35,14 @@ export const loginSchema = z.strictObject({
   password: z.string({ error: 'Password wajib diisi' }).min(1, 'Password wajib diisi'),
 });
 
-export const updateProfileSchema = z.strictObject({
-  name: nameField.optional(),
-  email: emailField.optional(),
-});
+export const updateProfileSchema = z
+  .strictObject({
+    name: nameField.optional(),
+    email: emailField.optional(),
+  })
+  .refine((data) => data.name !== undefined || data.email !== undefined, {
+    message: 'Minimal satu field harus diubah',
+  });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
