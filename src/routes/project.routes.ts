@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Role } from '@prisma/client';
 import * as projectController from '../controllers/project.controller.js';
+import * as taskController from '../controllers/task.controller.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { requireProjectMember } from '../middlewares/projectAuth.js';
 import { validate } from '../middlewares/validate.js';
@@ -9,6 +10,7 @@ import {
   projectIdParamSchema,
   updateProjectSchema,
 } from '../validators/project.validator.js';
+import { createTaskSchema, listTasksQuerySchema } from '../validators/task.validator.js';
 
 export const projectRouter = Router();
 
@@ -44,4 +46,21 @@ projectRouter.delete(
   requireProjectMember([Role.OWNER]),
   projectController.deleteProject,
 );
+
+// POST /api/v1/projects/:projectId/tasks — membuat tugas baru di proyek (AGENTS.md §8.4)
+projectRouter.post(
+  '/:projectId/tasks',
+  validate({ params: projectIdParamSchema, body: createTaskSchema }),
+  requireProjectMember(),
+  taskController.createTask,
+);
+
+// GET /api/v1/projects/:projectId/tasks — melihat daftar tugas proyek (AGENTS.md §8.4)
+projectRouter.get(
+  '/:projectId/tasks',
+  validate({ params: projectIdParamSchema, query: listTasksQuerySchema }),
+  requireProjectMember(),
+  taskController.listProjectTasks,
+);
+
 
