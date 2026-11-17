@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Role } from '@prisma/client';
 import * as projectController from '../controllers/project.controller.js';
 import * as taskController from '../controllers/task.controller.js';
+import * as teamController from '../controllers/team.controller.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { requireProjectMember } from '../middlewares/projectAuth.js';
 import { validate } from '../middlewares/validate.js';
@@ -11,6 +12,11 @@ import {
   updateProjectSchema,
 } from '../validators/project.validator.js';
 import { createTaskSchema, listTasksQuerySchema } from '../validators/task.validator.js';
+import {
+  createInvitationSchema,
+  memberIdParamSchema,
+  updateMemberRoleSchema,
+} from '../validators/team.validator.js';
 
 export const projectRouter = Router();
 
@@ -62,5 +68,38 @@ projectRouter.get(
   requireProjectMember(),
   taskController.listProjectTasks,
 );
+
+// GET /api/v1/projects/:projectId/members — melihat daftar anggota tim (AGENTS.md §8.5)
+projectRouter.get(
+  '/:projectId/members',
+  validate({ params: projectIdParamSchema }),
+  requireProjectMember(),
+  teamController.listMembers,
+);
+
+// POST /api/v1/projects/:projectId/invitations — mengundang anggota tim (hanya OWNER dan ADMIN, AGENTS.md §8.5)
+projectRouter.post(
+  '/:projectId/invitations',
+  validate({ params: projectIdParamSchema, body: createInvitationSchema }),
+  requireProjectMember([Role.OWNER, Role.ADMIN]),
+  teamController.createInvitation,
+);
+
+// PATCH /api/v1/projects/:projectId/members/:memberId — mengubah role anggota (hanya OWNER dan ADMIN, AGENTS.md §8.5)
+projectRouter.patch(
+  '/:projectId/members/:memberId',
+  validate({ params: memberIdParamSchema, body: updateMemberRoleSchema }),
+  requireProjectMember([Role.OWNER, Role.ADMIN]),
+  teamController.updateMemberRole,
+);
+
+// DELETE /api/v1/projects/:projectId/members/:memberId — mengeluarkan anggota / keluar dari proyek (AGENTS.md §8.5)
+projectRouter.delete(
+  '/:projectId/members/:memberId',
+  validate({ params: memberIdParamSchema }),
+  requireProjectMember(),
+  teamController.removeMember,
+);
+
 
 

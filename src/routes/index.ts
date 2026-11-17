@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as apiController from '../controllers/api.controller.js';
 import { authRouter } from './auth.routes.js';
+import { invitationRouter } from './invitation.routes.js';
 import { projectRouter } from './project.routes.js';
 import { taskRouter } from './task.routes.js';
 import { userRouter } from './user.routes.js';
@@ -18,5 +19,7 @@ apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', userRouter);
 apiRouter.use('/projects', projectRouter);
 apiRouter.use('/tasks', taskRouter);
+apiRouter.use('/invitations', invitationRouter);
+
 
 
