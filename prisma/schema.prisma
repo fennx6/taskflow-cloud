@@ -1,6 +1,7 @@
 // Schema TaskFlow Cloud
-// Rancangan awal disusun dari AGENTS.md §7.1 oleh Backend Developer 1.
-// WAJIB direview Backend Developer 2 sebelum `prisma migrate dev` dijalankan.
+// Rancangan awal disusun dari AGENTS.md §7.1 oleh Backend Developer 1 dan sudah
+// diterapkan lewat migration 20261109062557_init. Perubahan schema berikutnya
+// wajib didiskusikan dengan Backend Developer 2 sebelum dijalankan (AGENTS.md §7.3).
 
 generator client {
   provider = "prisma-client-js"

@@ -13,6 +13,7 @@ export interface AccessTokenPayload {
  */
 export function signAccessToken(payload: AccessTokenPayload): string {
   const options: SignOptions = {
+    algorithm: 'HS256',
     subject: payload.sub,
     expiresIn: env.jwtExpiresIn as SignOptions['expiresIn'],
   };
@@ -24,7 +25,9 @@ export function verifyAccessToken(token: string): AccessTokenPayload {
   let decoded: string | JwtPayload;
 
   try {
-    decoded = jwt.verify(token, env.jwtSecret);
+    // Algoritma dipatok ke HS256: token dengan alg lain (mis. "none") ditolak,
+    // bukan hanya diverifikasi berdasarkan secret (praktik standar jsonwebtoken).
+    decoded = jwt.verify(token, env.jwtSecret, { algorithms: ['HS256'] });
   } catch {
     throw new AppError(401, 'Token autentikasi tidak valid atau sudah kedaluwarsa');
   }
