@@ -1,0 +1,30 @@
+# Dependensi
+node_modules/
+
+# Hasil build
+dist/
+build/
+coverage/
+
+# Environment - jangan pernah commit file berisi secret
+.env
+.env.*
+!.env.example
+
+# Log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & sistem operasi
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# File database lokal
+*.db
+*.db-journal
