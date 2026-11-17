@@ -39,11 +39,27 @@ export const updateProfileSchema = z
   .strictObject({
     name: nameField.optional(),
     email: emailField.optional(),
+    /**
+     * Hanya wajib jika email berubah. Kewajiban itu tidak bisa diperiksa di sini
+     * karena butuh data user saat ini, jadi diverifikasi di service layer.
+     */
+    currentPassword: z
+      .string({ error: 'Password saat ini tidak valid' })
+      .min(1, 'Password saat ini wajib diisi')
+      .optional(),
   })
   .refine((data) => data.name !== undefined || data.email !== undefined, {
     message: 'Minimal satu field harus diubah',
   });
 
+export const updatePasswordSchema = z.strictObject({
+  currentPassword: z
+    .string({ error: 'Password saat ini wajib diisi' })
+    .min(1, 'Password saat ini wajib diisi'),
+  newPassword: passwordField,
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;

@@ -82,8 +82,16 @@ export const apiEndpoints: ApiEndpoint[] = [
     method: 'PATCH',
     path: '/api/v1/users/me',
     auth: 'bearer',
-    description: 'Mengubah nama dan/atau email profil sendiri',
-    body: ['name?', 'email?'],
+    description: 'Mengubah nama dan/atau email profil sendiri (currentPassword wajib jika email berubah)',
+    body: ['name?', 'email?', 'currentPassword?'],
+  },
+  {
+    tag: 'User',
+    method: 'PATCH',
+    path: '/api/v1/users/me/password',
+    auth: 'bearer',
+    description: 'Mengubah password sendiri setelah memverifikasi password saat ini',
+    body: ['currentPassword', 'newPassword'],
   },
   {
     tag: 'Projects',
