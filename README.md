@@ -64,6 +64,15 @@ Perintah lain:
 
 Semua endpoint berada di bawah `/api/v1` dan memakai format response AGENTS.md §8.6.
 
+### Umum
+
+| Method | Path | Auth | Keterangan |
+|---|---|---|---|
+| GET | `/api/v1` | - | Daftar endpoint yang tersedia (JSON) |
+| GET | `/health` | - | Health check server (Dokku/monitoring) |
+
+Daftar pada `GET /api/v1` berasal dari [`src/routes/apiCatalog.ts`](src/routes/apiCatalog.ts). Setiap kali menambah route baru, perbarui file tersebut agar daftar tetap akurat.
+
 ### Authentication
 
 | Method | Path | Auth | Keterangan |
@@ -83,6 +92,9 @@ Semua endpoint berada di bawah `/api/v1` dan memakai format response AGENTS.md �
 ### Contoh
 
 ```bash
+# daftar endpoint yang tersedia
+curl http://localhost:3000/api/v1
+
 # register
 curl -X POST http://localhost:3000/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -124,15 +136,16 @@ Response gagal:
 - Email dinormalisasi (trim + lowercase) dan unik di database.
 - Login memakai pesan error generik agar tidak membocorkan email mana yang terdaftar.
 - JWT hanya memuat `id` dan `email`; role tidak dimasukkan ke token.
+- Token ditandatangani dan diverifikasi dengan algoritma HS256 yang dipatok, sehingga token dengan `alg` lain (mis. `none`) ditolak.
 - Middleware `authenticate` mengambil ulang user dari database setiap request.
 - Body request ditolak (422) jika memuat field tak dikenal, misalnya `role`.
 
 ## 7. Catatan untuk Backend Developer 2
 
-- `prisma/schema.prisma` sudah memuat 5 model awal dari AGENTS.md §7.1 dan **wajib direview** sebelum migration pertama dijalankan.
+- `prisma/schema.prisma` sudah memuat 5 model awal dari AGENTS.md §7.1 dan sudah diterapkan lewat migration `20261109062557_init`. Perubahan schema berikutnya wajib didiskusikan dulu (AGENTS.md §7.3).
 - Middleware `authenticate` mengisi `req.user` dengan bentuk `{ id, name, email }`. Gunakan `requireAuthUser(req)` untuk mengambilnya.
 - Gunakan `sendSuccess` / `sendError` dari `src/utils/response.ts` agar format response konsisten.
-- Tambahkan router modul project/task/team pada `src/routes/index.ts`.
+- Tambahkan router modul project/task/team pada `src/routes/index.ts`, lalu daftarkan endpoint barunya di `src/routes/apiCatalog.ts` agar `GET /api/v1` tetap akurat.
 
 ## 8. Catatan logout
 
