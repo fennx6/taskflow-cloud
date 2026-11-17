@@ -28,3 +28,7 @@ Thumbs.db
 # File database lokal
 *.db
 *.db-journal
+
+# File panduan internal (tidak di-track ke git)
+AGENTS.md
+
